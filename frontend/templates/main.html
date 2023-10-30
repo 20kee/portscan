@@ -5,30 +5,31 @@
 </head>
 <body>
     <h1>Port Scanner</h1>
-    <form id="portScannerForm">
+        {{ipaddr}}
         <label for="ipAddress">IP 주소:</label>
         <input type="text" id="ip" name="ip" placeholder="예: 192.168.0.1" required>
 
-        <form action>
-            <button type="button" onclick="startPortScan()">Search</button>
-        </form>
-    </form>
+        <button type="button" onclick="startPortScan()">Search</button>
     <p id="scanResult"></p>
     <script>
         function startPortScan() {
-            const ipAddress = document.getElementById("ipAddress").value;
+            const ipAddress = document.querySelector('#ip').value;
 
-            // IP 주소를 서버에 POST 요청으로 보냅니다.
-            fetch('/portscan', {
+            fetch('/search', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ ip: ipAddress }),
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json(); 
+            })
             .then(data => {
-                document.getElementById("scanResult").innerHTML = "포트 스캔 결과: " + data.result;
+                document.getElementById("scanResult").innerHTML = "포트 스캔 결과: " + data.ip;
             })
             .catch(error => {
                 document.getElementById("scanResult").innerHTML = "오류 발생: " + error;
@@ -36,4 +37,4 @@
         }
     </script>
 </body>
-</html>
+</html>    
