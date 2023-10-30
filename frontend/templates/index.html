@@ -1,1 +1,99 @@
-hi
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>인덱스 페이지</title>
+    <style>
+        /* 전체 페이지 스타일 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 헤더 스타일 */
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* 메인 콘텐츠 스타일 */
+        .content {
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 링크 스타일 */
+        a {
+                color: #0078d4;
+                text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* 검색창 스타일 */
+        .search-container {
+            text-align: center;
+            margin: 20px;
+        }
+
+        .search-input {
+            padding: 10px;
+            width: 400px; /* 너비를 조정 */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-button {
+            padding: 10px 20px;
+            background-color: #0078d4;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* 사용자 링크 스타일 */
+        .user-links ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .user-links ul li {
+            display: inline-block; /* 가로로 배치 */
+            margin-right: 10px; /* 각 링크 사이의 간격 설정 */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>HI</h1>
+        <p>테트리스 하고싶다</p>
+        <!-- 검색창 추가 -->
+        <form action="/검색결과페이지.html" method="get">
+            <input type="text" name="q" placeholder="검색어를 입력하세요">
+            <button type="submit">검색</button>
+        </form>
+    </header>
+
+    <div class="content">
+        <h2>여기에 뭐 넣지?</h2>
+        <p>여기에는 또 뭐 넣지?</p>
+
+        <h2>링크를 넣는 곳?</h2>
+        <div class="user-links"></div>
+        <ul>
+            <li><a href="#">링크 1?</a></li>
+            <li><a href="#">링크 2?</a></li>
+            <li><a href="#">링크 3?</a></li>
+        </ul>
+    </div>
+</body>
+</html>
