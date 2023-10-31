@@ -19,7 +19,7 @@ class NormalScanner:
         for i, thread in enumerate(self._threads):
             thread.join()
 
-        return self._results
+        return json.dumps(self._results)
 
     def work(self, ip, start_port, end_port):
         if end_port >= 65536:
@@ -43,9 +43,6 @@ class NormalScanner:
                     else:
                         # print(e, port)
                         pass
-    
-    def getResult(self):
-        return json.dumps(self._results)
  
 def main():
     scanner = NormalScanner()
