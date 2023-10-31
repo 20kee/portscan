@@ -94,7 +94,6 @@ class scanner():
                 print ("[" + str(ip_address) + ":" + str(port) + "] " + res[port])
 
 
-
 def main():
     s = scanner(ip, None)
 
