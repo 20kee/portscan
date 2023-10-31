@@ -10,9 +10,10 @@ class NormalScanner:
         self._results = {}
         self._threads = []
 
-    def scan(self, ip, start_port, end_port):
-        port_count = end_port - start_port + 1 
-        task_number = port_count // 2500 + 1
+    def scan(self, ip, start_port, end_port, task_number = 0):
+        port_count = end_port - start_port + 1
+        if task_number == 0:
+            task_number = port_count // 2500 + 1
         self._threads = []
         for i in range(start_port, end_port, task_number):
             t = threading.Thread(target=self.work, args=(ip, i, i+task_number-1))
@@ -49,9 +50,8 @@ class NormalScanner:
  
 def main():
     scanner = NormalScanner()
-    results = scanner.scan('3.142.251.166', 1, 2499)
+    results = scanner.scan('3.142.251.166', 1, 65535)
     print(results)
     
 if __name__ == '__main__':
     main()
-
