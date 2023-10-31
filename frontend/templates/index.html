@@ -2,98 +2,95 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>인덱스 페이지</title>
+    <title>TETRIS</title>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
     <style>
+
         /* 전체 페이지 스타일 */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            background-color: #131313;
             margin: 0;
             padding: 0;
         }
 
-        /* 헤더 스타일 */
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 20px;
+        /* 로고 스타일 */
+        .logo {
             text-align: center;
+            margin-top: 140px; /* 숫자를 늘리면 로고가 아래로 내려감 */
+            font-size: 48px; /* 글자 크기 조정 */
+            font-family: 'Press Start 2P' , cursive;
         }
-
-        /* 메인 콘텐츠 스타일 */
-        .content {
-            margin: 20px;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        /* 링크 스타일 */
-        a {
-                color: #0078d4;
-                text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
+        
+        .rainbow-text {
+            background-image: linear-gradient(200deg, 
+                #FF0000, #FF3300, #FF6600, #FF9900, #FFCC00, #00FFFF, #33CCFF, #6699FF, 
+                #9966FF, #CC33FF, #FF00FF, #FF00CC, #FF0099, #FF0066, #FF0033, #FF0000
+            );
+            -webkit-background-clip: text;
+            -moz-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         /* 검색창 스타일 */
         .search-container {
             text-align: center;
-            margin: 20px;
+            margin: 40px 0;
         }
 
         .search-input {
             padding: 10px;
-            width: 400px; /* 너비를 조정 */
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            width: 500px;
+            border: 1px solid #dfe1e5;
+            border-radius: 24px;
+            outline: none;
+            font-size: 18px;
         }
 
         .search-button {
             padding: 10px 20px;
-            background-color: #0078d4;
-            color: #fff;
+            background-color: #b3efdd;
+            color: #000000;
             border: none;
-            border-radius: 5px;
+            border-radius: 24px;
             cursor: pointer;
+            font-size: 18px; 
+            margin-left: 10px; /* 검색버튼 살짝 오른쪽 */
         }
 
-        /* 사용자 링크 스타일 */
-        .user-links ul {
-            list-style: none;
-            padding: 0;
+        /* 인덱스 스타일 */
+        .index {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            border: 1px solid #dfe1e5;
+            border-radius: 10px; /* 테두리 둥근 정도 */
+            background-color: white;
+            height: 400px;
+            width: 80%; /* 가로 너비를 조정 */
+            margin: 0 auto; /* 가운데 정렬 */
+            font-size: 18px;
         }
 
-        .user-links ul li {
-            display: inline-block; /* 가로로 배치 */
-            margin-right: 10px; /* 각 링크 사이의 간격 설정 */
-        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>HI</h1>
-        <p>테트리스 하고싶다</p>
-        <!-- 검색창 추가 -->
-        <form action="/검색결과페이지.html" method="get">
-            <input type="text" name="q" placeholder="검색어를 입력하세요">
-            <button type="submit">검색</button>
-        </form>
-    </header>
 
-    <div class="content">
-        <h2>여기에 뭐 넣지?</h2>
-        <p>여기에는 또 뭐 넣지?</p>
+    <!-- 로고 -->
+    <h1 class = "logo rainbow-text"> T E T R I S </h1>
 
-        <h2>링크를 넣는 곳?</h2>
-        <div class="user-links"></div>
-        <ul>
-            <li><a href="#">링크 1?</a></li>
-            <li><a href="#">링크 2?</a></li>
-            <li><a href="#">링크 3?</a></li>
-        </ul>
+    <!-- 검색창 -->
+    <div class="search-container">
+        <input type="text" class="search-input" name="q" title="검색" value="" aria-label="검색" autofocus>
+        <button type="submit" class="search-button">검색</button>
+    </div>
+
+    <!-- 인덱스 -->
+    <div class ="index">
+        <h2>인덱스 페이지</h2>
+        <p> 여기에 뭘 넣는다고?? </p>
     </div>
 </body>
 </html>
+
