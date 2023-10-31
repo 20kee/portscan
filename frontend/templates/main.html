@@ -5,7 +5,6 @@
 </head>
 <body>
     <h1>Port Scanner</h1>
-        {{ipaddr}}
         <label for="ipAddress">IP 주소:</label>
         <input type="text" id="ip" name="ip" placeholder="예: 192.168.0.1" required>
 
@@ -29,7 +28,28 @@
                 return response.json(); 
             })
             .then(data => {
-                document.getElementById("scanResult").innerHTML = "포트 스캔 결과: " + data.ip;
+                if(data.error){
+                    console.log('에러발생: '+data.error);
+                }
+                const resultDiv = document.getElementById('scanResult');
+                if (Object.keys(data).length>0) {
+                    resultDiv.innerHTML = '포트 스캔 결과:';
+
+                    for (const port in data) {
+                        if (data.hasOwnProperty(port)) {
+                            const status = data[port];
+
+                            resultDiv.innerHTML += `<div>`;
+
+                            resultDiv.innerHTML += `<h3>포트: ${port}</h3>`;
+                            resultDiv.innerHTML += `<details> <summary>${status[0]}</summary> <div style="padding:30px;">${status[1]}</div>  </details>`;
+                            
+                            resultDiv.innerHTML += `</div>`
+                        }
+                    }
+                } else {
+                    resultDiv.innerHTML = '결과없음';
+                }
             })
             .catch(error => {
                 document.getElementById("scanResult").innerHTML = "오류 발생: " + error;
