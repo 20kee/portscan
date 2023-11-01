@@ -3,7 +3,7 @@
 import socket
 import threading
 import time
-url = '18.116.88.166'
+url = 'ec2-13-209-19-147.ap-northeast-2.compute.amazonaws.com'
 ip = socket.gethostbyname(url)
 # ip = "18.116.88.166"  #취약한 서버 IP 주소
 ports = list(range(464, 466))

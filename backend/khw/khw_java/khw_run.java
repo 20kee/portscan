@@ -7,7 +7,7 @@ import java.net.Socket;
 public class khw_run extends Thread {
     @Override
     public void run(){
-        String ipAddress = "ec2-13-209-65-115.ap-northeast-2.compute.amazonaws.com";
+        String ipAddress = "ec2-13-209-19-147.ap-northeast-2.compute.amazonaws.com";
         int timeout = 1000;
         for (int port = 0; port <= 10000; port++){
             try{
