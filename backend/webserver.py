@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify
+from leechangmin.scanner import NormalScanner
 
 app = Flask(__name__, template_folder='../frontend')
 
@@ -12,12 +13,14 @@ def main():
 
 @app.route("/search",  methods=['GET', 'POST'])
 def search():
-    ipaddr=""
     if request.method == 'POST':
         data = request.get_json()
-        ipaddr = {'ip':data['ip']}
-        return jsonify(ipaddr)
+        scanner = NormalScanner()
+        results = scanner.scan(data['ip'], 1, 1024)
+        return results
+    else:
+        return jsonify({'error': 'Method not allowed'})
 
 if __name__ == '__main__':
-    app.run(debug=True, host = '127.0.0.1', port=80)
+    app.run(debug=True, host = '192.168.1.169', port=80)
 
