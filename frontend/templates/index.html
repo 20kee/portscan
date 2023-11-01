@@ -13,7 +13,7 @@
     <!-- 검색창 -->
     <div class="search-container">
         <input type="text" id="ip" class="search-input" name="ip" title="검색" value="" aria-label="검색" autofocus>
-        <button type="submit" class="search-button" onclick="startPortScan()">검색</button>
+        <button id="scanButton" type="submit" class="search-button" onclick="startPortScan()">검색</button>
     </div>
 
     <!-- 인덱스 -->
@@ -23,31 +23,40 @@
 
     <!-- JavaScript를 통해 이미지를 동적으로 생성 -->
     <script>
+        var blockImages = [];
 
+        for (var i = 1; i <= 7; i++) {
+            var blockImg = new Image();
+            blockImg.src = "../static/img/" + i + ".png";
+            blockImages.push(blockImg);
+        }
         // 떨어지는 블록을 생성하고 초기 위치를 랜덤하게 설정
         function createFallingBlock() {
             const block = document.createElement('div');
             block.className = 'tetris-block';
             const randomLeft = Math.random() * 100 + '%';
             block.style.left = randomLeft;
-            const randomImage = Math.floor(Math.random() * 14) + 1; // 1부터 7까지의 이미지 중 랜덤 선택
-            block.innerHTML = `<img src="../static/img/${randomImage}.png" alt="Tetris Block">`;
+            const randomImage = Math.floor(Math.random() * 7); 
+            const blockImg = blockImages[randomImage].cloneNode(true);
+            
+            const randomRotate = Math.floor(Math.random() * 4); 
+            blockImg.style.transform = 'rotate('+randomRotate*90+'deg)';
+
+            block.appendChild(blockImg);
             document.body.appendChild(block);
 
             setTimeout(function () {
                 block.remove();
             }, 5000);
-        }
-
-        const blockInterval = 300;
-
-        setInterval(function() {
-            createFallingBlock();
-        }, blockInterval);
+        }setInterval(function() {      createFallingBlock();    }, 1000);
 
 
         function startPortScan() {
             const ipAddress = document.querySelector('#ip').value;
+            const scanButton = document.getElementById('scanButton');
+            const scanResult = document.getElementById('scanResult');
+            scanButton.disabled = true;
+            scanResult.innerHTML = '<h2>IP '+ipAddress+' 검색중..</h2>'
 
             fetch('/search', {
                 method: 'POST',
@@ -63,6 +72,7 @@
                 return response.json(); 
             })
             .then(data => {
+                scanButton.disabled = false;
                 if(data.error){
                     console.log('에러발생: '+data.error);
                 }
@@ -105,6 +115,7 @@
                 }
             })
             .catch(error => {
+                scanButton.disabled = false;
                 document.getElementById("scanResult").innerHTML = "오류 발생: " + error;
             });
         }
@@ -183,6 +194,7 @@
         z-index: 1;
         overflow-y: scroll;
     }
+
     .tetris-block {
         position: absolute;
         animation: fall 5s linear infinite;
@@ -193,9 +205,6 @@
     .tetris-block img {
         width: 100%;
         height: 100%;
-    }
-    #scanResult {
-        margin-top: 20px;
     }
     #scanResult div {
         border: 3px solid #b693ff;
@@ -235,7 +244,7 @@
             top: -30%;
         }
         100% {
-            top: 200%;
+            top: 120%;
         }
     }
 </style>
