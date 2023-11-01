@@ -4,121 +4,21 @@
     <meta charset="UTF-8">
     <title>TETRIS</title>
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
-    <style>
-        /* 전체 페이지 스타일 */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #131313;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            position: relative;
-        }
 
-        /* 로고 스타일 */
-        .logo {
-            text-align: center;
-            margin-top: 140px;
-            font-size: 48px;
-            font-family: 'Press Start 2P', cursive;
-            z-index: 1;
-        }
-
-        .rainbow-text {
-            background-image: linear-gradient(200deg, 
-                #FF0000, #FF3300, #FF6600, #FF9900, #FFCC00, #00FFFF, #33CCFF, #6699FF, 
-                #9966FF, #CC33FF, #FF00FF, #FF00CC, #FF0099, #FF0066, #FF0033, #FF0000
-            );
-            -webkit-background-clip: text;
-            -moz-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        /* 검색창 스타일 */
-        .search-container {
-            text-align: center;
-            margin: 40px 0;
-            z-index: 1;
-        }
-
-        .search-input {
-            padding: 10px;
-            width: 500px;
-            border: 3px solid #69fffc;
-            border-radius: 24px;
-            outline: none;
-            font-size: 18px;
-        }
-
-        .search-button {
-            padding: 10px 20px;
-            background-color: #b3efdd;
-            color: #000000;
-            border: none;
-            border-radius: 24px;
-            cursor: pointer;
-            font-size: 18px;
-            margin-left: 10px;
-        }
-
-        /* 인덱스 스타일 */
-        .index {
-            text-align: center;
-            margin-top: 50px;
-            padding: 20px;
-            border: 4px solid #69fffc;
-            border-radius: 10px;
-            background-color: white;
-            height: 400px;
-            width: 80%;
-            margin: 0 auto;
-            font-size: 18px;
-            z-index: 1;
-        }
-
-        /* 각 테트리스 블록 이미지의 스타일 */
-        .tetris-block {
-            position: absolute;
-            animation: fall 5s linear infinite;
-            z-index: -1;
-            width: 30px;
-            height: 30px;
-            top: 0;
-        }
-
-        .tetris-block img {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* 떨어지는 애니메이션 스타일 */
-        @keyframes fall {
-            0% {
-                top: 0;
-                transform: translateY(0);
-            }
-            100% {
-                top: 100%;
-                transform: translateY(100%);
-            }
-        }
-    </style>
 </head>
 <body>
-    <!-- 로고 -->
-    <h1 class="logo rainbow-text">T E T R I S</h1>
+
+    <h1 class="logo rainbow-text">P O R T S C A N N E R</h1>
 
     <!-- 검색창 -->
     <div class="search-container">
-        <input type="text" class="search-input" name="q" title="검색" value="" aria-label="검색" autofocus>
-        <button type="submit" class="search-button">검색</button>
+        <input type="text" id="ip" class="search-input" name="ip" title="검색" value="" aria-label="검색" autofocus>
+        <button type="submit" class="search-button" onclick="startPortScan()">검색</button>
     </div>
 
     <!-- 인덱스 -->
-    <div class="index">
-        <h2>인덱스 페이지</h2>
-        <p>여기에 뭘 넣는다고??</p>
+    <div id ="scanResult" class="index">
+        <h2>검색결과</h2>
     </div>
 
     <!-- JavaScript를 통해 이미지를 동적으로 생성 -->
@@ -130,8 +30,8 @@
             block.className = 'tetris-block';
             const randomLeft = Math.random() * 100 + '%';
             block.style.left = randomLeft;
-            const randomImage = Math.floor(Math.random() * 7) + 1; // 1부터 7까지의 이미지 중 랜덤 선택
-            block.innerHTML = `<img src="tetris-block${randomImage}.jpg" alt="Tetris Block">`;
+            const randomImage = Math.floor(Math.random() * 14) + 1; // 1부터 7까지의 이미지 중 랜덤 선택
+            block.innerHTML = `<img src="../static/img/${randomImage}.png" alt="Tetris Block">`;
             document.body.appendChild(block);
 
             setTimeout(function () {
@@ -145,6 +45,198 @@
             createFallingBlock();
         }, blockInterval);
 
+
+        function startPortScan() {
+            const ipAddress = document.querySelector('#ip').value;
+
+            fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ ip: ipAddress }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json(); 
+            })
+            .then(data => {
+                if(data.error){
+                    console.log('에러발생: '+data.error);
+                }
+                const resultDiv = document.getElementById('scanResult');
+                if (Object.keys(data).length>0) {
+                    resultDiv.innerHTML = '<h2>['+ipAddress+']<h2>';
+
+                    for (const port in data) {
+                        if (data.hasOwnProperty(port)) {
+                            const status = data[port];
+                            const div = document.createElement('div');
+
+                            const heading = document.createElement('h3');
+                            heading.textContent = `포트: ${port}`;
+
+                            const details = document.createElement('details');
+                            const summary = document.createElement('summary');
+                            summary.textContent = status[0];
+                            const detailsContent = document.createElement('div');
+                            detailsContent.style.padding = '30px';
+                            detailsContent.textContent = status[1];
+                            
+
+                            details.appendChild(summary);
+                            details.appendChild(detailsContent);
+
+                            div.appendChild(heading);
+                            div.appendChild(details);
+
+                            resultDiv.appendChild(div);
+
+                            summary.id='summary'
+                            div.addEventListener("mousedown", (e) => {
+                                if(e.target.id!='summary')   details.open = !details.open;
+                            });
+                        }
+                    }
+                } else {
+                    resultDiv.innerHTML = '결과없음';
+                }
+            })
+            .catch(error => {
+                document.getElementById("scanResult").innerHTML = "오류 발생: " + error;
+            });
+        }
     </script>
 </body>
+<style> 
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #131313;
+        overflow: hidden;
+    }
+
+    .logo {
+        text-align: center;
+        font-size: 48px;
+        font-family: 'Press Start 2P', cursive;
+        z-index: 1;
+        margin:0;
+        padding-top:7%;
+    }
+
+    .rainbow-text {
+        background-image: linear-gradient(200deg, 
+            #FF0000, #FF3300, #FF6600, #FF9900, #FFCC00, #00FFFF, #33CCFF, #6699FF, 
+            #9966FF, #CC33FF, #FF00FF, #FF00CC, #FF0099, #FF0066, #FF0033, #FF0000
+        );
+        -webkit-background-clip: text;
+        -moz-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .search-container {
+        text-align: center;
+        margin: 40px 0;
+        z-index: 1;
+    }
+
+    .search-input {
+        padding: 10px;
+        width: 500px;
+        border: 3px solid #69fffc;
+        border-radius: 24px;
+        outline: none;
+        font-size: 18px;
+    }
+
+    .search-button {
+        padding: 10px 20px;
+        background-color: #b3efdd;
+        color: #000000;
+        border: none;
+        border-radius: 24px;
+        cursor: pointer;
+        font-size: 18px;
+        margin-left: 10px;
+    }
+
+    /* 인덱스 스타일 */
+    .index {
+        text-align: center;
+        margin-top: 50px;
+        padding: 20px;
+        border: 4px solid #69fffc;
+        border-radius: 10px;
+        background-color: white;
+        height: 50%;
+        width: 70%;
+        margin: 0 auto;
+        font-size: 18px;
+        z-index: 1;
+        overflow-y: scroll;
+    }
+    .tetris-block {
+        position: absolute;
+        animation: fall 5s linear infinite;
+        z-index: -1;
+        top: 0;
+    }
+
+    .tetris-block img {
+        width: 100%;
+        height: 100%;
+    }
+    #scanResult {
+        margin-top: 20px;
+    }
+    #scanResult div {
+        border: 3px solid #b693ff;
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 5px;
+        background: #ffffff20;
+        cursor: pointer;
+    }
+    #scanResult h3 {
+        margin: 0;
+    }
+    details {
+        margin-top: 10px;
+    }
+    summary {
+        list-style: none;
+    }
+    summary::before {
+        content: '▶'; 
+        display: inline-block;
+        width: 1em;
+        text-align: center;
+        margin-right: 0.5em;
+    }
+    details[open] summary::before {
+        content: '▼'; /* 열린 요약 상자에는 열린 모양으로 변경 */
+    }
+    details > div {
+        margin-top: 5px;
+        background: #ffffff40;
+    }
+    
+
+    @keyframes fall {
+        0% {
+            top: -30%;
+        }
+        100% {
+            top: 200%;
+        }
+    }
+</style>
 </html>

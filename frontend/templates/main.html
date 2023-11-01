@@ -4,12 +4,14 @@
     <title>Port Scanner</title>
 </head>
 <body>
+    <div id="mainDiv">
     <h1>Port Scanner</h1>
         <label for="ipAddress">IP 주소:</label>
         <input type="text" id="ip" name="ip" placeholder="예: 192.168.0.1" required>
 
         <button type="button" onclick="startPortScan()">Search</button>
     <p id="scanResult"></p>
+    </div>
     <script>
         function startPortScan() {
             const ipAddress = document.querySelector('#ip').value;
@@ -38,13 +40,31 @@
                     for (const port in data) {
                         if (data.hasOwnProperty(port)) {
                             const status = data[port];
+                            const div = document.createElement('div');
 
-                            resultDiv.innerHTML += `<div>`;
+                            const heading = document.createElement('h3');
+                            heading.textContent = `포트: ${port}`;
 
-                            resultDiv.innerHTML += `<h3>포트: ${port}</h3>`;
-                            resultDiv.innerHTML += `<details> <summary>${status[0]}</summary> <div style="padding:30px;">${status[1]}</div>  </details>`;
+                            const details = document.createElement('details');
+                            const summary = document.createElement('summary');
+                            summary.textContent = status[0];
+                            const detailsContent = document.createElement('div');
+                            detailsContent.style.padding = '30px';
+                            detailsContent.textContent = status[1];
                             
-                            resultDiv.innerHTML += `</div>`
+
+                            details.appendChild(summary);
+                            details.appendChild(detailsContent);
+
+                            div.appendChild(heading);
+                            div.appendChild(details);
+
+                            resultDiv.appendChild(div);
+
+                            summary.id='summary'
+                            div.addEventListener("mousedown", (e) => {
+                                if(e.target.id!='summary')   details.open = !details.open;
+                            });
                         }
                     }
                 } else {
@@ -57,4 +77,87 @@
         }
     </script>
 </body>
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: linear-gradient(to right, #3724c1, #6267fc, #b388ef); /* 여기에 사용하고 싶은 색상 조합을 추가하세요 */
+            padding: 0;
+            padding-top:3%;
+            text-align: center;
+            font-size: 24px;
+            color: #fff;
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #4CAF50;
+        }
+        button {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+        #scanResult {
+            margin-top: 20px;
+        }
+        #scanResult div {
+            border: 1px solid #fff;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background: #ffffff20;
+            cursor: pointer;
+        }
+        #scanResult h3 {
+            margin: 0;
+        }
+        details {
+            margin-top: 10px;
+        }
+        summary {
+            list-style: none;
+        }
+        summary::before {
+            content: '▶'; 
+            display: inline-block;
+            width: 1em;
+            text-align: center;
+            margin-right: 0.5em;
+        }
+        details[open] summary::before {
+            content: '▼'; /* 열린 요약 상자에는 열린 모양으로 변경 */
+        }
+        details > div {
+            margin-top: 5px;
+            background: #ffffff40;
+        }
+        #mainDiv{
+            width: 50%;
+            position: relative;
+            margin: auto;
+        }
+</style>
 </html>    
