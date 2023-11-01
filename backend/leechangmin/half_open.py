@@ -3,8 +3,6 @@ import argparse
 import time
 import socket
 
-url = ''
-ip = socket.gethostbyname(url) if url != '' else '3.142.251.166'
 
 class scanner():
     def __init__(self, host_start, host_end):
@@ -95,7 +93,11 @@ class scanner():
 
 
 def main():
+    url = ''
+    ip = socket.gethostbyname(url) if url != '' else '3.142.251.166'
+
     s = scanner(ip, None)
+    
 
 
 if __name__ == "__main__":
