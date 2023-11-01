@@ -10,8 +10,6 @@ import json
 class NormalScanner:
     def __init__(self):
         self._results = {}
-        self._processes = [0, 1, 2, 3, 4, 5, 6, 7]
-        self._threads = []
 
     def scan(self, ip, start_port, end_port, fast=True):
         processes = []
