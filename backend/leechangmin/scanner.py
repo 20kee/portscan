@@ -2,48 +2,68 @@
  
 import socket
 import threading
+import multiprocessing
 import time
-<<<<<<< HEAD
-url = 'ec2-13-209-19-147.ap-northeast-2.compute.amazonaws.com'
-ip = socket.gethostbyname(url)
-# ip = "18.116.88.166"  #취약한 서버 IP 주소
-ports = list(range(464, 466))
-=======
 import json
->>>>>>> 2eb37afa0e991a5b5e41afc7da503a4823ba2507
+import copy
+
 
 class NormalScanner:
     def __init__(self):
         self._results = {}
-        self._threads = []
 
-    def scan(self, ip, start_port, end_port, task_number = 0):
-        port_count = end_port - start_port + 1
-        if task_number == 0:
-            task_number = port_count // 2500 + 1
-        self._threads = []
+    def scan(self, ip, start_port, end_port, fast=True):
+        manager = multiprocessing.Manager()
+        processes = []
+        ports = [start_port]
+        if fast == True:
+            process_number = 8
+        else:
+            process_number = 1
+        
+        if end_port - start_port  < 100:
+            process_number = 1
+    
+        for i in range(1, process_number):
+            ports.append((end_port-start_port)*i//process_number)
+        ports.append(end_port+1)
+        result = manager.dict()
+        
+        for i in range(process_number):
+            processes.append(multiprocessing.Process(target=self.scan_process, args=(ip, ports[i], ports[i+1]-1, result)))
+            processes[i].start()
+        for p in processes:
+            p.join()
+        
+        return json.dumps(dict(result))
+        
+    
+    def scan_process(self, ip, start_port, end_port, result):
+        port_count = end_port - start_port + 1 
+        task_number = port_count // 2500 + 1
+        threads = []
         for i in range(start_port, end_port, task_number):
-            t = threading.Thread(target=self.work, args=(ip, i, i+task_number-1))
+            t = threading.Thread(target=self.work, args=(ip, i, i+task_number-1, result))
             t.start()
-            self._threads.append(t)
+            threads.append(t)
 
-        for i, thread in enumerate(self._threads):
+        for thread in threads:
             thread.join()
+        
 
-        return json.dumps(self._results)
-
-    def work(self, ip, start_port, end_port):
+    def work(self, ip, start_port, end_port, result):
         if end_port >= 65536:
             end_port = 65535
         for port in range(start_port, end_port+1):
             try:
                 with socket.socket() as s:
-                    s.settimeout(2)
+                    s.settimeout(3)
                     s.connect((ip, port))
                     s.send("Python Connect\n".encode())
                     banner = s.recv(1024) 
                     if banner:
-                        self._results[str(port)] = [banner.decode().split('\n')[0].rstrip('\r'), banner.decode()]
+                        result[str(port)] = [banner.decode().split('\n')[0].rstrip('\r'), banner.decode()]
+                        
                             
             except Exception as e:
                 if str(e) == "timed out":
@@ -56,9 +76,14 @@ class NormalScanner:
                         pass
  
 def main():
+    url = ''
+    ip = socket.gethostbyname(url) if url != '' else '3.142.251.166'
     scanner = NormalScanner()
-    results = scanner.scan('3.142.251.166', 1, 65535)
-    print(results)
+
+    print('========== Fast Version ==========')
+    start_time = time.time()
+    scanner.scan(ip, 1, 65535, fast=True)
+    print('Execution Time :', time.time() - start_time)
     
 if __name__ == '__main__':
     main()
