@@ -16,7 +16,7 @@ def search():
     if request.method == 'POST':
         data = request.get_json()
         scanner = NormalScanner()
-        results = scanner.scan(data['ip'], 1, 1024)
+        results = scanner.scan(data['ip'], 1, 5000)
         return results
     else:
         return jsonify({'error': 'Method not allowed'})
