@@ -3,15 +3,13 @@
 import socket
 import threading
 import time
-<<<<<<< HEAD
+
 url = 'ec2-13-209-19-147.ap-northeast-2.compute.amazonaws.com'
 ip = socket.gethostbyname(url)
 # ip = "18.116.88.166"  #취약한 서버 IP 주소
 ports = list(range(464, 466))
-=======
-import json
->>>>>>> 2eb37afa0e991a5b5e41afc7da503a4823ba2507
 
+import json
 class NormalScanner:
     def __init__(self):
         self._results = {}
