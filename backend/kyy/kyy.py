@@ -89,4 +89,3 @@ tcp_header = pack('!HHLLBBHHH' , source, dest, seq, ack_seq, offset_res, tcp_fla
 packet = ip_header + tcp_header
  
 s.sendto(packet, (dest_ip , 0 ))
-
