@@ -16,12 +16,32 @@
         <button id="scanButton" type="submit" class="search-button" onclick="startPortScan()">검색</button>
     </div>
 
+    <!-- 스캐너 -->
+    <div class="button-container">
+        <label class="menu-button">
+            <input type="radio" name="scanner" value="스캐너 1">
+            <span class="checkmark"></span>
+            스캐너 1
+        </label>
+        <label class="menu-button">
+            <input type="radio" name="scanner" value="스캐너 2">
+            <span class="checkmark"></span>
+            스캐너 2
+        </label>
+        <label class="menu-button">
+            <input type="radio" name="scanner" value="스캐너 3">
+            <span class="checkmark"></span>
+            스캐너 3
+        </label>
+    </div>
+
     <!-- 인덱스 -->
     <div id ="scanResult" class="index">
         <h2>검색결과</h2>
     </div>
 
     <!-- JavaScript를 통해 이미지를 동적으로 생성 -->
+    
     <script>
         var blockImages = [];
 
@@ -179,6 +199,64 @@
         margin-left: 10px;
     }
 
+    /* 버튼 스타일 */  
+    .button-group {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .button-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        top: -17%;
+    }
+
+    .menu-button {
+        display: flex;
+        align-items: center;
+        margin: 15px;
+        cursor: pointer;
+        font-size: 13px;
+        color: #69fffc
+    }
+
+    .menu-button input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+    }
+
+    .checkmark {
+        position: relative;
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        background-color: #69fffc;
+        border-radius: 50%;
+        margin-right: 8px;
+        transition: background-color 0.3s;
+    }
+
+    .menu-button input[type="radio"]:checked + .checkmark {
+        background-color: #fbff00;
+    }
+
+    /* 스타일 추가 */
+    .menu-button input[type="radio"] + .checkmark::before {
+        content: '';
+        position: absolute;
+        display: none;
+        border-width: 2px;
+        border-top: none;
+        border-right: none;
+        transform: rotate(45deg);
+}
+
+    .menu-button input[type="radio"]:checked + .checkmark::before {
+        display: none;
+    }
+
     /* 인덱스 스타일 */
     .index {
         text-align: center;
@@ -190,7 +268,7 @@
         height: 50%;
         width: 70%;
         margin: 0 auto;
-        font-size: 18px;
+        font-size: 17px;
         z-index: 1;
         overflow-y: scroll;
     }
