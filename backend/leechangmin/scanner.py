@@ -11,13 +11,15 @@ import copy
 class NormalScanner:
     def __init__(self):
         self._results = {}
+        self._send_messages = dict()
+        self._send_messages[80] = "GET / HTTP/1.1\r\n\r\n"
 
     def scan(self, ip, start_port, end_port, fast=True):
         manager = multiprocessing.Manager()
         processes = []
         ports = [start_port]
         if fast == True:
-            process_number = 8
+            process_number = 4
         else:
             process_number = 1
         
@@ -76,13 +78,13 @@ class NormalScanner:
                         pass
  
 def main():
-    url = ''
-    ip = socket.gethostbyname(url) if url != '' else '3.142.251.166'
+    url = 'github.com'
+    ip = socket.gethostbyname(url) if url != '' else '142.250.31.105'
     scanner = NormalScanner()
 
     print('========== Fast Version ==========')
     start_time = time.time()
-    scanner.scan(ip, 1, 65535, fast=True)
+    print(scanner.scan(ip, 1, 5000))
     print('Execution Time :', time.time() - start_time)
     
 if __name__ == '__main__':
