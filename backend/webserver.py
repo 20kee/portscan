@@ -31,7 +31,11 @@ def search():
         if minport>maxport:
             return jsonify({'error': '최소 포트가 더 크잖아'})
         
-        results = scanner.scan(data['ip'], int(data['minPort']), int(data['maxPort']))
+        if '스캐너' == '스캐너':
+            results = scanner.scan(data['ip'], int(data['minPort']), int(data['maxPort']))
+        elif '하프오픈' == '하프오픈':
+            results = scanner.scan(data['ip'], int(data['minPort']), int(data['maxPort']))
+
         return results
     else:
         return jsonify({'error': 'Method not allowed'})
