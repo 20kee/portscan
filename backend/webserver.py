@@ -16,7 +16,22 @@ def search():
     if request.method == 'POST':
         data = request.get_json()
         scanner = NormalScanner()
-        results = scanner.scan(data['ip'], 1, 5000)
+        minport=0
+        maxport=65535
+        try:
+            minport = int(data['minPort'])
+            maxport = int(data['maxPort'])
+        except:
+            return jsonify({'error': '포트에 숫자만 입력하세요^^'})
+
+        if maxport>65535:
+            maxport=65535
+        if minport<0:
+            minport=0
+        if minport>maxport:
+            return jsonify({'error': '최소 포트가 더 크잖아'})
+        
+        results = scanner.scan(data['ip'], int(data['minPort']), int(data['maxPort']))
         return results
     else:
         return jsonify({'error': 'Method not allowed'})

@@ -84,7 +84,7 @@ def main():
 
     print('========== Fast Version ==========')
     start_time = time.time()
-    print(scanner.scan(ip, 1, 5000))
+    print(scanner.scan(ip, 1, 65535))
     print('Execution Time :', time.time() - start_time)
     
 if __name__ == '__main__':
