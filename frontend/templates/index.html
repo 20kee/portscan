@@ -134,25 +134,25 @@
 
                             const heading = document.createElement('h3');
                             heading.textContent = `포트: ${port}`;
-
-                            const details = document.createElement('details');
-                            const summary = document.createElement('summary');
-                            summary.textContent = status[0];
-                            const detailsContent = document.createElement('div');
-                            detailsContent.style.padding = '30px';
-                            detailsContent.textContent = status[1];
-                            
-
-                            details.appendChild(summary);
-                            details.appendChild(detailsContent);
-
                             div.appendChild(heading);
-                            div.appendChild(details);
+                            if(status!='open'){
+                                console.log(status[1])
+                                const details = document.createElement('details');
+                                const summary = document.createElement('summary');
+                                summary.textContent = status[0];
+                                const detailsContent = document.createElement('div');
+                                detailsContent.style.padding = '30px';
+                                detailsContent.textContent = status[1];
+                            
+                                details.appendChild(summary);
+                                details.appendChild(detailsContent);
+                                div.appendChild(details);
+                                summary.id='summary'
+                            }
 
                             resultDiv.appendChild(div);
 
-                            summary.id='summary'
-                            div.addEventListener("mousedown", (e) => {
+                            if(status!='open')   div.addEventListener("mousedown", (e) => {
                                 if(e.target.id!='summary')   details.open = !details.open;
                             });
                         }

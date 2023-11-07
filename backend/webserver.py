@@ -18,6 +18,7 @@ def search():
         scanner = NormalScanner()
         minport=0
         maxport=65535
+        Stype = data['Stype']
         try:
             minport = int(data['minPort'])
             maxport = int(data['maxPort'])
@@ -31,11 +32,12 @@ def search():
         if minport>maxport:
             return jsonify({'error': '최소 포트가 더 크잖아'})
         
-        if '스캐너' == '스캐너':
+        if Stype == 's2':
             results = scanner.scan(data['ip'], int(data['minPort']), int(data['maxPort']))
-        elif '하프오픈' == '하프오픈':
+        elif Stype == 's1':
             results = scanner.half_open_scan(data['ip'], int(data['minPort']), int(data['maxPort']))
-
+        else:   
+            return jsonify({'error': '스캐너 선택이 잘못됨'})
         return results
     else:
         return jsonify({'error': 'Method not allowed'})
