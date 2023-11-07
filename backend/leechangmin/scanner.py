@@ -94,20 +94,8 @@ def main():
     ip = socket.gethostbyname(url) if url != '' else '142.250.31.105'
     result = list()
     scanner = NormalScanner()
-<<<<<<< HEAD
-
-    print('========== Fast Version ==========')
-    start_time = time.time()
-    print(scanner.scan(ip, 1, 65535))
-    print('Execution Time :', time.time() - start_time)
-=======
     open_ports = scanner.half_open_scan(ip, 1, 5000)
     print(open_ports)
-    # print('========== Fast Version ==========')
-    # start_time = time.time()
-    # print(scanner.scan(ip, 1, 5000))
-    # print('Execution Time :', time.time() - start_time)
->>>>>>> e265613a21bc07c639525f44052a8a37a634ee92
     
 if __name__ == '__main__':
     main()
