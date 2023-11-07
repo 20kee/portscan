@@ -34,7 +34,7 @@ def search():
         if '스캐너' == '스캐너':
             results = scanner.scan(data['ip'], int(data['minPort']), int(data['maxPort']))
         elif '하프오픈' == '하프오픈':
-            results = scanner.scan(data['ip'], int(data['minPort']), int(data['maxPort']))
+            results = scanner.half_open_scan(data['ip'], int(data['minPort']), int(data['maxPort']))
 
         return results
     else:
