@@ -7,33 +7,34 @@
 
 </head>
 <body>
-
+    
     <h1 class="logo rainbow-text">P O R T S C A N N E R</h1>
-
-    <!-- 검색창 -->
-    <div class="search-container">
-        <input type="text" id="ip" class="search-input" name="ip" title="검색" value="" aria-label="검색" autofocus>
-        <button id="scanButton" type="submit" class="search-button" onclick="startPortScan()">검색</button>
-    </div>
 
     <!-- 스캐너 -->
     <div class="button-container">
         <label class="menu-button">
-            <input type="radio" name="scanner" value="스캐너 1">
+            <input type="radio" name="scanner" value="s1" checked>
             <span class="checkmark"></span>
-            스캐너 1
+            포트 확인
         </label>
         <label class="menu-button">
-            <input type="radio" name="scanner" value="스캐너 2">
+            <input type="radio" name="scanner" value="s2">
             <span class="checkmark"></span>
-            스캐너 2
-        </label>
-        <label class="menu-button">
-            <input type="radio" name="scanner" value="스캐너 3">
-            <span class="checkmark"></span>
-            스캐너 3
+            포트+서비스 확인
         </label>
     </div>
+
+    <!-- 검색창 -->
+    <div class="search-container">
+        <input type="text" id="ip" class="search-input" name="ip" title="검색" value="" placeholder = "127.0.0.1"aria-label="검색" autofocus>
+    
+        <input class="search-input port" type="number" min="0" max="65535" placeholder="Port         0">
+        <input class="search-input port port2" type="number" min="1" max="65535" placeholder="~ 65535">
+     
+        <button id="scanButton" type="submit" class="search-button" onclick="startPortScan()">검색</button>
+    
+    </div>
+
 
     <!-- 인덱스 -->
     <div id ="scanResult" class="index">
@@ -50,7 +51,6 @@
             blockImg.src = "../static/img/" + i + ".png";
             blockImages.push(blockImg);
         }
-        // 떨어지는 블록을 생성하고 초기 위치를 랜덤하게 설정
         function createFallingBlock() {
             const block = document.createElement('div');
             block.className = 'tetris-block';
@@ -72,7 +72,32 @@
 
 
         function startPortScan() {
-            const ipAddress = document.querySelector('#ip').value;
+            let ipAddress = document.querySelector('#ip').value;
+            let minPort = document.querySelector('.search-input.port').value;
+            let maxPort = document.querySelector('.search-input.port2').value;
+            let Stype = 's1';
+            document.getElementsByName('scanner').forEach((node) => {
+                if(node.checked)  {  Stype = node.value;  }
+            }) 
+
+            if(!ipAddress){
+                alert('IP주소를 입력해주세요.');
+                return;
+            }
+
+            var ips = ipAddress.split('.');
+            if(ips.length!=4){
+                alert('IP주소를 제대로 입력해주세요.');
+                return;
+            }
+            
+            if(!minPort) {document.querySelector('.search-input.port').value = 1; minPort=1;}
+            if(!maxPort) {document.querySelector('.search-input.port2').value = 65535; maxPort=65535;}
+            if(minPort>maxPort){
+                alert('최소 포트가 더 크게 입력되었습니다.');
+                return;
+            }
+
             const scanButton = document.getElementById('scanButton');
             const scanResult = document.getElementById('scanResult');
             scanButton.disabled = true;
@@ -83,7 +108,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ ip: ipAddress }),
+                body: JSON.stringify({ ip: ipAddress,minPort:minPort,maxPort:maxPort,Stype:Stype }),
             })
             .then(response => {
                 if (!response.ok) {
@@ -94,7 +119,9 @@
             .then(data => {
                 scanButton.disabled = false;
                 if(data.error){
-                    console.log('에러발생: '+data.error);
+                    alert('에러발생: '+data.error);
+                    document.getElementById("scanResult").innerHTML = "오류 발생: " + data.error;
+                    return;
                 }
                 const resultDiv = document.getElementById('scanResult');
                 if (Object.keys(data).length>0) {
@@ -107,25 +134,25 @@
 
                             const heading = document.createElement('h3');
                             heading.textContent = `포트: ${port}`;
-
-                            const details = document.createElement('details');
-                            const summary = document.createElement('summary');
-                            summary.textContent = status[0];
-                            const detailsContent = document.createElement('div');
-                            detailsContent.style.padding = '30px';
-                            detailsContent.textContent = status[1];
-                            
-
-                            details.appendChild(summary);
-                            details.appendChild(detailsContent);
-
                             div.appendChild(heading);
-                            div.appendChild(details);
+                            if(status!='open'){
+                                console.log(status[1])
+                                const details = document.createElement('details');
+                                const summary = document.createElement('summary');
+                                summary.textContent = status[0];
+                                const detailsContent = document.createElement('div');
+                                detailsContent.style.padding = '30px';
+                                detailsContent.textContent = status[1];
+                            
+                                details.appendChild(summary);
+                                details.appendChild(detailsContent);
+                                div.appendChild(details);
+                                summary.id='summary'
+                            }
 
                             resultDiv.appendChild(div);
 
-                            summary.id='summary'
-                            div.addEventListener("mousedown", (e) => {
+                            if(status!='open')   div.addEventListener("mousedown", (e) => {
                                 if(e.target.id!='summary')   details.open = !details.open;
                             });
                         }
@@ -159,7 +186,7 @@
         font-family: 'Press Start 2P', cursive;
         z-index: 1;
         margin:0;
-        padding-top:7%;
+        padding-top:6%;
     }
 
     .rainbow-text {
@@ -175,7 +202,7 @@
 
     .search-container {
         text-align: center;
-        margin: 40px 0;
+        margin-bottom: 40px;
         z-index: 1;
     }
 
@@ -187,7 +214,14 @@
         outline: none;
         font-size: 18px;
     }
-
+    .port{
+        width: 100px;
+        border-radius: 24px 0 0 24px;
+        margin-right:0px;
+    }
+    .port2{
+        border-radius: 0 24px 24px 0;
+    }
     .search-button {
         padding: 10px 20px;
         background-color: #b3efdd;
@@ -210,7 +244,7 @@
         justify-content: center;
         align-items: center;
         position: relative;
-        top: -17%;
+        margin-top: 40px;
     }
 
     .menu-button {
@@ -242,19 +276,8 @@
         background-color: #fbff00;
     }
 
-    /* 스타일 추가 */
-    .menu-button input[type="radio"] + .checkmark::before {
-        content: '';
-        position: absolute;
-        display: none;
-        border-width: 2px;
-        border-top: none;
-        border-right: none;
-        transform: rotate(45deg);
-}
-
     .menu-button input[type="radio"]:checked + .checkmark::before {
-        display: none;
+        content:'💢';
     }
 
     /* 인덱스 스타일 */
