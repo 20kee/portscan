@@ -94,7 +94,7 @@ class scanner():
 
 def main():
     url = ''
-    ip = socket.gethostbyname(url) if url != '' else '3.142.251.166'
+    ip = socket.gethostbyname(url) if url != '' else '3.142.53.115'
 
     s = scanner(ip, None)
     
