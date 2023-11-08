@@ -14,6 +14,26 @@ class NormalScanner:
     def __init__(self):
         self._results = {}
         self._half_results = {}
+        self._send_msg = {
+                80 : b'GET / HTTP/1.1\r\nHost: example.com\r\n\r\n',     # HTTP 
+                443 : b'GET / HTTP/1.1\r\nHost: example.com\r\n\r\n',    # SSL
+                21 : b'USER anonymous\r\n',                              # FTP
+                25 : b'EHLO example.com\r\n',                            # SMTP
+                110 : b'USER test\r\n',                                  # POP3
+                143 : b'a1 LOGIN user password\r\n',                     # IMAP
+                161 : b'',                                               # SNMP
+                389 : b'ldapsearch -x -h example.com -s base "(objectclass=)"',  #LDAP
+                1433 : b'',#SQL Server
+                1521 : b'(CONNECT_DATA=(COMMAND=version))',#Oracle DB 
+                123: b'',#NTP (123)
+                5060: b'OPTIONS sip:nouser@example.com SIP/2.0\r\n',#SIP (5060)
+                9200 : b'GET /Redis (6379)INFO\r\nMongoDB (27017){ "ismaster": 1 }',#Elasticsearch (9200)
+                53: b'', #DNS (53)
+                111: b'No specific message; an RPC call is needed to grab a banner.', #RPCbind (111)
+                2049: b'No specific message; an NFS call is needed to grab a banner.', #NFS (2049)
+                5222: b"<stream:stream to='example.com' xmlns:stream='http://etherx.jabber.org/streams' version='1.0'>",#XMPP (5222)
+                6667: b'NICK guest\r\nUSER guest 0 :guest\r\n'#IRC (6667)
+            }
 
     def half_open_scan(self, ip, start_port, end_port):
         packet = IP(dst=ip)
@@ -73,8 +93,10 @@ class NormalScanner:
                 with socket.socket() as s:
                     s.settimeout(3)
                     s.connect((ip, port))
-                    s.send("Python Connect\n".encode())
-                    banner = s.recv(1024) 
+                    ss = self._send_msg[port] if port in self._send_msg.keys() else "Python Connect\n".encode()
+                    print(ss)
+                    s.send(ss)
+                    banner = s.recv(4096) 
                     if banner:
                         result[str(port)] = [banner.decode().split('\n')[0].rstrip('\r'), banner.decode()]
                         
@@ -91,10 +113,10 @@ class NormalScanner:
  
 def main():
     url = 'github.com'
-    ip = socket.gethostbyname(url) if url != '' else '3.142.53.115'
+    ip = socket.gethostbyname(url) if url != '' else '3.23.101.195'
     result = list()
     scanner = NormalScanner()
-    open_ports = scanner.half_open_scan(ip, 1, 5000)
+    open_ports = scanner.scan(ip, 1, 5000)
     print(open_ports)
     
 if __name__ == '__main__':
