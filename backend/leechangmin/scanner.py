@@ -104,7 +104,9 @@ class NormalScanner:
                             if self._check_banner[port] in resp_msg:
                                 result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' True', resp_msg]
                             else:
-                                result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' False', resp_msg]
+                                result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' hmm..', resp_msg]
+                        else:
+                            result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' False', resp_msg]
                         
             except Exception as e:
                 pass
