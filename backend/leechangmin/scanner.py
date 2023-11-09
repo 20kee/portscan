@@ -36,6 +36,14 @@ class NormalScanner:
                 5222: b"<stream:stream to='example.com' xmlns:stream='http://etherx.jabber.org/streams' version='1.0'>",#XMPP (5222)
                 6667: b'NICK guest\r\nUSER guest 0 :guest\r\n'#IRC (6667)
             }
+        self._check_banner = {
+            22 : 'SSH',
+            25 : 'ESMTP',
+            80 : 'HTTP',
+            110 : 'Dovecot',
+            143 : 'IMAPrev1',
+            443 : 'HTTP'
+        }
 
 
     def half_open_scan(self, ip, start_port, end_port):
@@ -99,7 +107,12 @@ class NormalScanner:
                     s.send(self._send_msg[port] if port in self._send_msg.keys() else "Python Connect\n".encode())
                     banner = s.recv(4096) 
                     if banner:
-                        result[str(port)] = [banner.decode().split('\n')[0].rstrip('\r'), banner.decode()]
+                        resp_msg = banner.decode()
+                        if port in self._check_banner.keys():
+                            if self._check_banner[port] in resp_msg:
+                                result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' True', resp_msg]
+                            else:
+                                result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' False', resp_msg]
                         
                             
             except Exception as e:
