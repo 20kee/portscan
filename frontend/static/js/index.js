@@ -45,7 +45,7 @@ function startPortScan() {
         return;
     }
     
-    if(!minPort) {document.querySelector('.search-input.port').value = 1; minPort=1;}
+    if(!minPort) {document.querySelector('.search-input.port').value = 0; minPort=0;}
     if(!maxPort) {document.querySelector('.search-input.port2').value = 65535; maxPort=65535;}
     if(minPort>maxPort){
         alert('최소 포트가 더 크게 입력되었습니다.');
@@ -54,7 +54,9 @@ function startPortScan() {
 
     const scanButton = document.getElementById('scanButton');
     const scanResult = document.getElementById('scanResult');
+    const loadingPage = document.getElementById('loadingPage');
     scanButton.disabled = true;
+    loadingPage.style.display='inline';
     scanResult.innerHTML = '<h2>IP '+ipAddress+' 검색중..</h2>'
 
     fetch('/search', {
@@ -72,6 +74,7 @@ function startPortScan() {
     })
     .then(data => {
         scanButton.disabled = false;
+        loadingPage.style.display='none';
         if(data.error){
             alert('에러발생: '+data.error);
             document.getElementById("scanResult").innerHTML = "오류 발생: " + data.error;
@@ -117,6 +120,7 @@ function startPortScan() {
     })
     .catch(error => {
         scanButton.disabled = false;
+        loadingPage.style.display='none';
         document.getElementById("scanResult").innerHTML = "오류 발생: " + error;
     });
 }
