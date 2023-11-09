@@ -55,7 +55,7 @@ class NormalScanner:
         processes = []
         ports = [start_port]
         if fast == True:
-            process_number = 8
+            process_number = 4
         else:
             process_number = 1
         
@@ -94,7 +94,7 @@ class NormalScanner:
         for port in range(start_port, end_port+1):
             try:
                 with socket.socket() as s:
-                    s.settimeout(3)
+                    s.settimeout(5)
                     s.connect((ip, port))
                     s.send(self._send_msg[port] if port in self._send_msg.keys() else "Python Connect\n".encode())
                     banner = s.recv(4096) 
