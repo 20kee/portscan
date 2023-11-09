@@ -1,61 +1,58 @@
 from scapy.all import *
-import socket
+from multiprocessing import Pool
 
-
-def scan(dst, port, flag_):
-    #S(SYN), F(FIN), N(NULL), X(XMAS)
+def scan(args):
+    dst, port, flag_ = args
+    # S(SYN), F(FIN), N(NULL), X(XMAS)
     if(flag_.upper() == 'S'):
         response = port_scan(dst, port, 'S')
-        if(response[TCP].flags == 0x12):
-            return f'{str(response).split(' ')[3]} is open'
+        if(response and response.haslayer(TCP) and response[TCP].flags == 0x12):
+            return {port}
         else:
-            return f'{dst}:{port} is close'
+            return None
         
     elif(flag_.upper() == 'F'):
         response = port_scan(dst, port, 'F')
         if(not response):
-            return f'{dst}:{port} is open'
+            return {port}
         else:
-            return f'{dst}:{port} is close'
+            return None
         
     elif(flag_.upper() == 'N'):
         response = port_scan(dst, port, '')
         if(not response):
-            return f'{dst}:{port} is open'
+            return {port}
         else:
-            return f'{dst}:{port} is close'
+            return None
         
     elif(flag_.upper() == 'X'):
         response = port_scan(dst, port, 'FPU')
         if(not response):
-            return f'{dst}:{port} is open'
+            return {port}
         else:
-            return f'{dst}:{port} is close'
+            return None
         
     else:
         return 'flag 값을 잘못 입력 했습니다. ex) S(SYN), F(FIN), N(NULL), X(XMAS)'
     
 
 def port_scan(dst, port, flag_):
-        ip = IP(dst = dst)
-        src_port = RandShort()
-        tcp = TCP(sport = src_port, dport = port, flags=flag_)
-
-        packet = ip /tcp
-        response = sr1(packet, timeout=1, verbose = 0)          #패킷 응답
-        print(response)
-        return response
-        
-if __name__ == '__main__':
-    #'13.209.19.147'
-    #flag = 'A'
-    #print(scan('13.209.19.147', 70, flag))
-    print(scan('115.21.152.84', 80, 'S'))
-'''
-    ip = IP(dst = '115.21.152.84')
+    ip = IP(dst=dst)
     src_port = RandShort()
-    tcp = TCP(sport = src_port, dport = 50, flags='FA')
-    packet = ip /tcp
-    response = sr1(packet, timeout=1, verbose = 0)          #패킷 응답        
-    print(response)
-'''
+    tcp = TCP(sport=src_port, dport=port, flags=flag_)
+
+    packet = ip / tcp
+    response = sr1(packet, timeout=0.2, verbose=0)  # 패킷 응답
+    return response
+
+if __name__ == '__main__':
+    s = time.time()
+    pool = Pool(processes=40)  # 사용할 프로세스 수 지정
+    args = [('3.142.53.115', port, 'S') for port in range(1, 65536)]
+    results = pool.map(scan, args)
+    e = time.time() 
+    
+    for result in results:
+        if(result):
+            print(result)
+    print(e - s)
