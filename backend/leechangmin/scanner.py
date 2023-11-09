@@ -1,16 +1,9 @@
 #기본적인 TCP 포트 스캔
 from scapy.all import sr, IP, TCP
-import time
-import socket
 import socket
 import threading
 import multiprocessing
-import time
 import json
-import copy
-
-
-
 
 class NormalScanner:
     def __init__(self):
@@ -45,7 +38,6 @@ class NormalScanner:
             443 : 'HTTP'
         }
 
-
     def half_open_scan(self, ip, start_port, end_port):
         packet = IP(dst=ip)
         packet /= TCP(dport=range(start_port, end_port), flags="S")
@@ -63,7 +55,7 @@ class NormalScanner:
         processes = []
         ports = [start_port]
         if fast == True:
-            process_number = 4
+            process_number = 8
         else:
             process_number = 1
         
@@ -114,23 +106,6 @@ class NormalScanner:
                             else:
                                 result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' False', resp_msg]
                         
-                            
             except Exception as e:
-                if str(e) == "timed out":
-                    pass
-                else:
-                    if 'Errno 61' in str(e):
-                        pass
-                    else:
-                        pass
+                pass
  
-def main():
-    url = 'github.com'
-    ip = socket.gethostbyname(url) if url != '' else '3.23.101.195'
-    result = list()
-    scanner = NormalScanner()
-    open_ports = scanner.scan(ip, 1, 5000)
-    print(open_ports)
-    
-if __name__ == '__main__':
-    main()
