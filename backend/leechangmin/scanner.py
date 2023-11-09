@@ -63,7 +63,7 @@ class NormalScanner:
             process_number = 1
     
         for i in range(1, process_number):
-            ports.append((end_port-start_port)*i//process_number)
+            ports.append(start_port+(end_port-start_port)*i//process_number)
         ports.append(end_port+1)
         result = manager.dict()
         
