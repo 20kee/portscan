@@ -128,15 +128,14 @@ class NormalScanner:
                             resp_msg = banner.decode()
                             if port in self._check_banner.keys():
                                 if self._check_banner[port] in resp_msg:
-                                    result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' True', resp_msg]
+                                    result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' True', resp_msg, self._well_known_sevice[port]]
                                 else:
-                                    result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' hmm..', resp_msg]
+                                    result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' hmm..', resp_msg, self._well_known_sevice[port]]
                             else:
-                                result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' False', resp_msg]
+                                result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' False', resp_msg, self._well_known_sevice[port]]
                         except:
                             resp_msg = banner
-                            result[str(port)] = [str(resp_msg) + ' hmm..', str(resp_msg)]
-                        result[str(port)].append(self._well_known_sevice[port])
+                            result[str(port)] = [str(resp_msg) + ' hmm..', str(resp_msg), self._well_known_sevice[port]]
 
             except Exception as e:
                 pass
