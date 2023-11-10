@@ -4,6 +4,7 @@ import socket
 import threading
 import multiprocessing
 import json
+from collections import defaultdict
 
 class NormalScanner:
     def __init__(self):
@@ -30,6 +31,8 @@ class NormalScanner:
                 6667: b'NICK guest\r\nUSER guest 0 :guest\r\n'#IRC (6667)
             }
         self._check_banner = {
+            20 : 'FTP',
+            21 : 'FTP',
             22 : 'SSH',
             25 : 'ESMTP',
             80 : 'HTTP',
@@ -37,6 +40,28 @@ class NormalScanner:
             143 : 'IMAPrev1',
             443 : 'HTTP'
         }
+        self._well_known_sevice = defaultdict(str)
+        
+        for port, service in {
+            7 : 'ECHO',
+            13 : 'DAYTIME',
+            20 : 'FTP Data',
+            21 : 'FTP',
+            22 : 'SSH',
+            23 : 'TELNET',
+            25 : 'SMTP',
+            37 : 'TIME',
+            43 : 'WHOIS',
+            53 : 'DNS',
+            67 : 'DHCP Server',
+            68 : 'DHCP Client',
+            79 : 'FINGER',
+            80 : 'HTTP',
+            110 : 'POP3',
+            143 : 'IMAP4',
+            443 : 'HTTPS', 
+        }.items():
+            self._well_known_sevice[port] = service
 
     def half_open_scan(self, ip, start_port, end_port):
         packet = IP(dst=ip)
@@ -111,8 +136,8 @@ class NormalScanner:
                         except:
                             resp_msg = banner
                             result[str(port)] = [str(resp_msg) + ' hmm..', str(resp_msg)]
-                        
-                
+                        result[str(port)].append(self._well_known_sevice[port])
+
             except Exception as e:
                 pass
  
