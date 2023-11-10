@@ -41,7 +41,7 @@ class NormalScanner:
     def half_open_scan(self, ip, start_port, end_port):
         packet = IP(dst=ip)
         packet /= TCP(dport=range(start_port, end_port), flags="S")
-        answered, unanswered = sr(packet, timeout=5)
+        answered, unanswered = sr(packet, timeout=5, verbose=0)
 
         for (send, recv) in answered:
             flags = recv.getlayer("TCP").sprintf("%flags%")
@@ -99,7 +99,6 @@ class NormalScanner:
                     s.send(self._send_msg[port] if port in self._send_msg.keys() else "Python Connect\n".encode())
                     banner = s.recv(4096)
                     if banner:
-                        print(banner)
                         try:
                             resp_msg = banner.decode()
                             if port in self._check_banner.keys():
