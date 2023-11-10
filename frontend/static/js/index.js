@@ -90,7 +90,7 @@ function startPortScan() {
                     const div = document.createElement('div');
 
                     const heading = document.createElement('h3');
-                    heading.textContent = `포트: ${port}`;
+                    heading.textContent = `포트: ${port} =>[${status[2]}]`;
                     div.appendChild(heading);
                     if(status!='open'){
                         console.log(status[1])

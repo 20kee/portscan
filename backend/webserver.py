@@ -19,23 +19,25 @@ def search():
         minport=0
         maxport=65535
         Stype = data['Stype']
+        ip = data['ip']
         try:
             minport = int(data['minPort'])
             maxport = int(data['maxPort'])
         except:
-            return jsonify({'error': '포트에 숫자만 입력하세요^^'})
+            return jsonify({'error': '포트에 숫자만 입력하세요'})
 
         if maxport>65535:
             maxport=65535
         if minport<0:
             minport=0
         if minport>maxport:
-            return jsonify({'error': '최소 포트가 더 크잖아'})
-        
+            return jsonify({'error': '최소 포트가 더 큽니다.'})
+        if ip=='127.0.0.1' or ip=='0.0.0.0':
+            return jsonify({'error': '해당 아이피는 검색 할 수 없습니다..'})
         if Stype == 's2':
             results = scanner.scan(data['ip'], int(data['minPort']), int(data['maxPort']))
         elif Stype == 's1':
-            results = scanner.half_open_scan(data['ip'], int(data['minPort']), int(data['maxPort']))
+            results = scanner.half_open_scan(ip, int(data['minPort']), int(data['maxPort']))
         else:   
             return jsonify({'error': '스캐너 선택이 잘못됨'})
         return results
