@@ -41,7 +41,7 @@ class NormalScanner:
     def half_open_scan(self, ip, start_port, end_port):
         packet = IP(dst=ip)
         packet /= TCP(dport=range(start_port, end_port), flags="S")
-        answered, unanswered = sr(packet, timeout=2)
+        answered, unanswered = sr(packet, timeout=5)
 
         for (send, recv) in answered:
             flags = recv.getlayer("TCP").sprintf("%flags%")
@@ -97,17 +97,26 @@ class NormalScanner:
                     s.settimeout(8)
                     s.connect((ip, port))
                     s.send(self._send_msg[port] if port in self._send_msg.keys() else "Python Connect\n".encode())
-                    banner = s.recv(4096) 
+                    banner = s.recv(4096)
                     if banner:
-                        resp_msg = banner.decode()
-                        if port in self._check_banner.keys():
-                            if self._check_banner[port] in resp_msg:
-                                result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' True', resp_msg]
+                        print(banner)
+                        try:
+                            resp_msg = banner.decode()
+                            if port in self._check_banner.keys():
+                                if self._check_banner[port] in resp_msg:
+                                    result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' True', resp_msg]
+                                else:
+                                    result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' hmm..', resp_msg]
                             else:
-                                result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' hmm..', resp_msg]
-                        else:
-                            result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' False', resp_msg]
+                                result[str(port)] = [resp_msg.split('\n')[0].rstrip('\r') + ' False', resp_msg]
+                        except:
+                            resp_msg = banner
+                            result[str(port)] = [str(resp_msg) + ' hmm..', str(resp_msg)]
                         
+                
             except Exception as e:
                 pass
  
+if __name__ == '__main__':
+    scanner = NormalScanner()
+    scanner.scan('115.21.152.84', 1, 65535)
