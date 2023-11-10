@@ -34,6 +34,11 @@ def search():
             return jsonify({'error': '최소 포트가 더 큽니다.'})
         if ip=='127.0.0.1' or ip=='0.0.0.0':
             return jsonify({'error': '해당 아이피는 검색 할 수 없습니다..'})
+        ips=ip.split('.')
+        
+        if ips[0]=='127' and ips[1]=='0'  and ips[2]=='0':
+            return jsonify({'error': '해당 아이피는 검색 할 수 없습니다..'})
+
         if Stype == 's2':
             results = scanner.scan(data['ip'], int(data['minPort']), int(data['maxPort']))
         elif Stype == 's1':
