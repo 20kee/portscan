@@ -193,7 +193,17 @@ details > div {
     margin-top: 5px;
     background: #ffffff40;
 }
-
+.index::-webkit-scrollbar {
+    width: 8px; 
+}
+.index::-webkit-scrollbar-thumb {
+    height: 30%;
+    background: #217af4; 
+    border-radius: 10px;
+}
+.index::-webkit-scrollbar-track {
+    background: rgba(33, 122, 244, .1); 
+}
 
 @keyframes fall {
     0% {
