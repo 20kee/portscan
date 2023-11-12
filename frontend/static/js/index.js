@@ -82,7 +82,7 @@ function startPortScan() {
         }
         const resultDiv = document.getElementById('scanResult');
         if (Object.keys(data).length>0) {
-            resultDiv.innerHTML = '<h2>['+ipAddress+']<h2>';
+            resultDiv.innerHTML = '<h2><span class="searchIP">'+ipAddress+'</span><h2>';
 
             for (const port in data) {
                 if (data.hasOwnProperty(port)) {
@@ -90,11 +90,17 @@ function startPortScan() {
                     const div = document.createElement('div');
 
                     const heading = document.createElement('h3');
-                    heading.textContent = `포트: ${port} =>[${status[2]}]`;
+                    heading.textContent = `${port}`;
+                    if(status!='open' && status[2].length>0){
+                        const searchSERVICE = document.createElement('span');
+                        searchSERVICE.className='searchSERVICE'
+                        searchSERVICE.textContent = ' '+status[2];
+                        heading.appendChild(searchSERVICE);
+                    }
                     div.appendChild(heading);
-                    if(status!='open'){
-                        console.log(status[1])
-                        const details = document.createElement('details');
+                    let details =''
+                    if(status!='open'){ 
+                        details = document.createElement('details');
                         const summary = document.createElement('summary');
                         summary.textContent = status[0];
                         const detailsContent = document.createElement('div');
